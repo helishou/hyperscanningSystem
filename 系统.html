@@ -13,7 +13,9 @@
         overflow: none none;
       }
       #flex {
+        position: relative;
         display: flex;
+        top: 2%;
       }
       canvas {
         flex: 1;
@@ -106,7 +108,7 @@
           <option value="中间层融合">中间层融合</option>
           <option value="决策层融合">决策层融合</option>
         </select>
-        <button type="button" id="button1" onclick="szdsq(5500)">开始!</button>
+        <button type="button" id="button1" onclick="webSocket()">开始!</button>
         <button type="button" id="button2" onclick="refreshall()">
           全部重置
         </button>
