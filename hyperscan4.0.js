@@ -1,77 +1,91 @@
 //config
 var CONFIG = {
-  FILEURL: "./",
+  URL: "./",
+  time: 30, //30对应指针运动3s
 };
-
+delay = 5500;
+trail = 0;
+let conutTime = +new Date();
 //测试函数
 async function test() {
-  arr = randomArr(3, -5, 5);
-  alert(arr);
+  start(5500);
+  for (let i = 0; i < 99; i++) {
+    setTimeout(() => {
+      change(randomArr(6, -1, 1));
+      let now = +new Date();
+      console.log(now - conutTime);
+      conutTime = now;
+    }, i * 5500);
+  }
+}
+//websocket
+function webSocket(url = CONFIG.URL) {
+  if ("WebSocket" in window) {
+    console.log("您的浏览器支持WebSocket");
+    var ws = new WebSocket(url);
+    //创建WebSocket连接
+    ws.onopen = function () {
+      //当WebSocket创建成功时，触发onopen事件
+      console.log("open");
+      ws.send("hello"); //将消息发送到服务端
+    };
+    ws.onmessage = function (e) {
+      //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据
+      var data = e.data;
+      console.log(data);
+      if ((data.indexOf = "start" != -1)) {
+        console.log("start");
+        //清空
+        start(5500);
+        // refresh(0, 0, 0, 0, "", "", "", "", 240);
+      } else if ((data.indexOf = "end" != -1)) {
+        end();
+      } else {
+        var arr = data.splice(" ");
+        if (arr.length != 5) {
+          console.log("数据长度不对");
+          return;
+        } else {
+          change(arr);
+        }
+      }
+    };
+    ws.onclose = function (e) {
+      //当客户端收到服务端发送的关闭连接请求时，触发onclose事件
+      console.log("close");
+      end();
+    };
+    ws.onerror = function (e) {
+      //如果出现连接、处理、接收、发送数据失败的时候触发onerror事件
+      console.log(error);
+      end();
+    };
+  } else {
+    console.log("您的浏览器不支持WebSocket");
+  }
 }
 //持续读取xls的定时器
-function cq(delay = 5500) {
-  var xmlHttp = null;
-  if (window.ActiveXObject) {
-    // IE6, IE5 浏览器执行代码
-    xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-  } else if (window.XMLHttpRequest) {
-    // IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
-    xmlHttp = new XMLHttpRequest();
-  }
-  //2.如果实例化成功，就调用open（）方法：
-  if (xmlHttp != null) {
-    xmlHttp.open("get", CONFIG.FILEURL + "label.csv", true);
-    xmlHttp.send();
-    xmlHttp.onreadystatechange = doR; //设置回调函数
-  }
-  async function doR() {
-    //判断三个框是否执行完毕
-
-    if (xmlHttp.readyState == 4) {
-      data = Papa.parse(xmlHttp.responseText);
-      data = data.data;
-      // alert(trail)
-      trail = data[0][4];
-    }
-  }
-  // console.log(trail)
-  // console.log(temp)
-  if (temp == trail - 1) {
-    window.clearInterval(d);
-    window.clearInterval(b);
-    window.clearInterval(c);
-    window.clearInterval(a);
-    // cal1();
-    // cal2();
-    // cal3();
-    // b = window.setInterval(cal3, delay);
-    // c = window.setInterval(cal1, delay);
-    jx = 0;
-    fd = 0;
-    global = {
-      a: 240,
-      b: 240,
-      c: 240,
-      f1: 0,
-      f2: 0,
-      f3: 0,
-      flag1: 0,
-      flag2: 0,
-      flag3: 0,
-    };
-    cal1();
-    cal2();
-    cal3();
-    b = window.setInterval(cal3, delay);
-    c = window.setInterval(cal1, delay);
-    // document.getElementById("button1").disabled = "";
-    return 0;
-  }
+function change(arr) {
+  trail++;
+  jx = 0;
+  fd = 0;
+  global = {
+    a: 240,
+    b: 240,
+    c: 240,
+    f1: 0,
+    f2: 0,
+    f3: 0,
+    flag1: 0,
+    flag2: 0,
+    flag3: 0,
+  };
+  cal2(arr);
 }
-function szdsq(delay) {
+function start(delay) {
   if (document.getElementById("button1").innerText == "暂停") {
-    window.clearInterval(b);
-    window.clearInterval(c);
+    // window.clearInterval(b);
+    // window.clearInterval(c);
     document.getElementById("button1").innerText = "等待停止";
     document.getElementById("button1").disabled = "disabled";
     jx = 1;
@@ -98,12 +112,12 @@ function szdsq(delay) {
     flag3: 0,
   };
   s = 0;
-  cal1();
-  cal2();
-  cal3();
-  b = window.setInterval(cal3, delay);
-  c = window.setInterval(cal1, delay);
+  d = 0;
+  a = 0;
+  b = 0;
+  c = 0;
 }
+
 //格式化函数
 var a = (b = c = 0);
 var qd = 240;
@@ -120,7 +134,7 @@ var globalo = {
   s1: 0,
   s2: 0,
   s3: 0,
-  s4:0
+  s4: 0,
 };
 number = 1;
 ScaleMinValue = 120;
@@ -142,197 +156,142 @@ function refreshall() {
     s1: 0,
     s2: 0,
     s3: 0,
-    s4:0
+    s4: 0,
   };
   number = 1;
   ScaleMinValue = 120;
   ScaleMaxValue = 360;
   xs = (trialtime - 1.8) / number;
   //必须两行
-  refresh(0, 0, 0,0, "", "", "", "", 240);
+  refresh(0, 0, 0, 0, "", "", "", "", 240);
 }
 //主函数
-function cal1(delay = 5500) {
+function cal1(arr) {
   // if (fd == 0) {
   //   document.getElementById("resText").style.paddingLeft = "10%";
   //   document.getElementById("resText").innerHTML = "等待数据导入";
   //   return 0;
   // }
-  cal2();
-  a = window.setInterval(cal2, delay / 11);
+  cal2(arr);
+  cal3();
+  a = window.setInterval(() => cal2(arr), 500);
 }
-function cal2() {
-  //trail 数
-  //1.声明异步请求对象：
-  var xmlHttp = null;
-  if (window.ActiveXObject) {
-    // IE6, IE5 浏览器执行代码
-    xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-  } else if (window.XMLHttpRequest) {
-    // IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
-    xmlHttp = new XMLHttpRequest();
-  }
-  //2.如果实例化成功，就调用open（）方法：
-  if (xmlHttp != null) {
-    xmlHttp.open("get", CONFIG.FILEURL + "label.csv", true);
-    xmlHttp.send();
-    xmlHttp.onreadystatechange = doResult; //设置回调函数
-  }
-  async function doResult() {
-    //判断三个框是否执行完毕
-    fd = 1;
-    if (global["flag1"] + global["flag2"] + global["flag3"]+global["flag4"] == 4) {
-      return 0;
-    }
-    if (xmlHttp.readyState == 4) {
-      data = Papa.parse(xmlHttp.responseText);
-      data = data.data;
-      // alert(trail)
-      label = data[0][4];
-      label1 = data[0][0];
-      label2 = data[0][1];
-      label3 = data[0][2];
-      label4 = data[0][3];
-      trail = data[0][5];
-      //显示当前任务
-      document.getElementById("resText").style.paddingLeft = "5%";
-      if (label == 1) {
-        document.getElementById("resText").innerHTML =
-          "  Trial  " + i + "   想像:向右";
-      } else if (label == 0) {
-        document.getElementById("resText").innerHTML =
-          "  Trial  " + i + "   想像:空闲";
-      } else {
-        document.getElementById("resText").innerHTML =
-          "  Trial  " + i + "   想像:向左";
-      }
-      //设定速度
-      function speed(label) {
-        if (label == 0) {
-          num = randomArr(trialtime / p, -5500 * p, 4500 * p);
-        } else if (label == 1) {
-          num = randomArr(trialtime / p, 6000 * p, 8000 * p);
-        } else {
-          num = randomArr(trialtime / p, -9000 * p, -6000 * p);
-        }
-        return num;
-      }
-      function speed2(label) {
-        if (label == 0) {
-          num = randomArr(trialtime / p, -5000 * p, 4000 * p);
-        } else if (label == 1) {
-          num = randomArr(trialtime / p, 5000 * p, 10000 * p);
-        } else {
-          num = randomArr(trialtime / p, -11000 * p, -5000 * p);
-        }
-        return num;
-      }
-      num1 = speed(label1);
-      num2 = speed(label2);
-      num3 = speed(label3);
-      num4 = speed2(label4);
-      // alert(num1)
-      function animal(a, num, canvas, s1, ngn) {
-        global[a] = global[a] + num[s];
-        canvasScore(
-          canvas,
-          globalo[s1],
-          (globalo[s1] / j).toFixed(2),
-          global[a],
-          ngn + "：判断中"
-        );
-      }
-      async function pdzy(a, flag, f1, canvas, s1, ngn) {
-        if (global[a] >= ScaleMaxValue) {
-          global[a] = global[a] + 500;
-          global[flag] = 1;
-          //终止定时器
-          canvasScore(
-            canvas,
-            globalo[s1],
-            "t",
-            ScaleMaxValue,
-            ngn + "：判断中"
-          );
-          if (parseInt(label) == 1) {
-            global[f1] = 1;
-            canvasScore(
-              canvas,
-              globalo[s1],
-              "t",
-              ScaleMaxValue,
-              ngn + "：正确"
-            );
-          } else {
-            canvasScore(
-              canvas,
-              globalo[s1],
-              "t",
-              ScaleMaxValue,
-              ngn + "：错误"
-            );
-          }
-        }
-        if (global[a] <= ScaleMinValue) {
-          global[a] = global[a] - 500;
-          global[flag] = 1;
-          //终止定时器
-          canvasScore(
-            canvas,
-            globalo[s1],
-            "t",
-            ScaleMinValue,
-            ngn + "：判断中"
-          );
-          if (parseInt(label) == -1) {
-            global[f1] = 1;
-            canvasScore(
-              canvas,
-              globalo[s1],
-              "t",
-              ScaleMinValue,
-              ngn + "：正确"
-            );
-          } else {
-            canvasScore(
-              canvas,
-              globalo[s1],
-              "t",
-              ScaleMinValue,
-              ngn + "：错误"
-            );
-          }
-        }
-      }
-      var t1 = +new Date();
-      var t2 = +new Date();
-      while (t2 - t1 < 0.5) {
-        var t2 = +new Date();
-        animal("a", num1, "Canvas01", "s1", "单脑A");
-        animal("b", num2, "Canvas02", "s2", "单脑B");
-        animal("c", num3, "Canvas03", "s3", "单脑C");
-        animal("c", num4, "Canvas04", "s4", "多脑");
-        pdzy("a", "flag1", "f1", "Canvas01", "s1", "单脑A");
-        pdzy("b", "flag2", "f2", "Canvas02", "s2", "单脑B");
-        pdzy("c", "flag3", "f3", "Canvas03", "s3", "单脑C");
-        pdzy("c", "flag4", "f4", "Canvas04", "s4", "多脑");
-      }
-    }
-  }
-}
-async function cal3() {
-  console.log(trail);
-  console.log(temp);
-  if (i > trail || (temp != -1 && temp == trail)) {
-    d = window.setInterval(cq, 200);
-    window.clearInterval(b);
-    window.clearInterval(c);
-    jx = 1;
-    temp = trail;
+
+async function cal2(arr) {
+  console.log(arr);
+  //判断三个框是否执行完毕
+  fd = 1;
+  if (
+    global["flag1"] + global["flag2"] + global["flag3"] + global["flag4"] ==
+    4
+  ) {
     return 0;
   }
-  await sleep(3500);
-  clearInterval(a);
+  // alert(trail)
+  label = arr[4];
+  label1 = arr[0];
+  label2 = arr[1];
+  label3 = arr[2];
+  label4 = arr[3];
+  trail = arr[5];
+  //显示当前任务
+  document.getElementById("resText").style.paddingLeft = "5%";
+  if (label == 1) {
+    document.getElementById("resText").innerHTML =
+      "  Trial  " + i + "   想像:向右";
+  } else if (label == 0) {
+    document.getElementById("resText").innerHTML =
+      "  Trial  " + i + "   想像:空闲";
+  } else {
+    document.getElementById("resText").innerHTML =
+      "  Trial  " + i + "   想像:向左";
+  }
+  //设定速度
+  function speed(label) {
+    if (label == 0) {
+      num = randomArr(trialtime / p, -5500 * p, 4500 * p);
+    } else if (label == 1) {
+      num = randomArr(trialtime / p, 6000 * p, 8000 * p);
+    } else {
+      num = randomArr(trialtime / p, -9000 * p, -6000 * p);
+    }
+    return num;
+  }
+  function speed2(label) {
+    if (label == 0) {
+      num = randomArr(trialtime / p, -5000 * p, 4000 * p);
+    } else if (label == 1) {
+      num = randomArr(trialtime / p, 5000 * p, 10000 * p);
+    } else {
+      num = randomArr(trialtime / p, -11000 * p, -5000 * p);
+    }
+    return num;
+  }
+  num1 = speed(label1);
+  num2 = speed(label2);
+  num3 = speed(label3);
+  num4 = speed2(label4);
+  // 运动中
+  function animal(a, num, canvas, s1, ngn) {
+    global[a] = global[a] + num[s];
+    canvasScore(
+      canvas,
+      globalo[s1],
+      (globalo[s1] / j).toFixed(2),
+      global[a],
+      ngn + "：判断中"
+    );
+  }
+  async function pdzy(a, flag, f1, canvas, s1, ngn) {
+    if (global[a] >= ScaleMaxValue) {
+      global[a] = global[a] + 500;
+      global[flag] = 1;
+      //终止定时器
+      canvasScore(canvas, globalo[s1], "t", ScaleMaxValue, ngn + "：判断中");
+      if (parseInt(label) == 1) {
+        global[f1] = 1;
+        canvasScore(canvas, globalo[s1], "t", ScaleMaxValue, ngn + "：正确");
+      } else {
+        canvasScore(canvas, globalo[s1], "t", ScaleMaxValue, ngn + "：错误");
+      }
+    }
+    if (global[a] <= ScaleMinValue) {
+      global[a] = global[a] - 500;
+      global[flag] = 1;
+      //终止定时器
+      canvasScore(canvas, globalo[s1], "t", ScaleMinValue, ngn + "：判断中");
+      if (parseInt(label) == -1) {
+        global[f1] = 1;
+        canvasScore(canvas, globalo[s1], "t", ScaleMinValue, ngn + "：正确");
+      } else {
+        canvasScore(canvas, globalo[s1], "t", ScaleMinValue, ngn + "：错误");
+      }
+    }
+  }
+  var time = 0;
+  function changePoint() {
+    animal("a", num1, "Canvas01", "s1", "单脑A");
+    animal("b", num2, "Canvas02", "s2", "单脑B");
+    animal("c", num3, "Canvas03", "s3", "单脑C");
+    animal("c", num4, "Canvas04", "s4", "多脑");
+    pdzy("a", "flag1", "f1", "Canvas01", "s1", "单脑A");
+    pdzy("b", "flag2", "f2", "Canvas02", "s2", "单脑B");
+    pdzy("c", "flag3", "f3", "Canvas03", "s3", "单脑C");
+    pdzy("c", "flag4", "f4", "Canvas04", "s4", "多脑");
+    // console.log(time)
+    if (time >= CONFIG.time) {
+      clearInterval(pointInterval);
+      cal3();
+      // console.timeEnd("time");
+    } else {
+      time++;
+    }
+  }
+  // console.time("time");
+  var pointInterval = setInterval(changePoint, 100);
+}
+
+async function cal3() {
   async function pdkx(flag, f, canvas, s, ngn) {
     if (global[flag] == 0) {
       if (parseInt(label) == 0) {
@@ -365,7 +324,7 @@ async function cal3() {
   global["f3"] = 0;
   global["f4"] = 0;
   j = j + number;
-  await sleep(500);
+  await sleep(400);
   refresh(
     globalo["s1"],
     globalo["s2"],
@@ -388,7 +347,7 @@ async function cal3() {
     flag2: 0,
     flag3: 0,
   };
-  await sleep(500);
+  await sleep(400);
   if (document.getElementById("button1").innerText == "等待停止") {
     document.getElementById("button1").innerText = "继续";
     document.getElementById("button1").disabled = "";
