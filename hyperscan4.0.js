@@ -1,10 +1,15 @@
+//config
+var CONFIG = {
+  FILEURL: "./",
+};
+
 //测试函数
 async function test() {
   arr = randomArr(3, -5, 5);
   alert(arr);
 }
 //持续读取xls的定时器
-function cq(delay=5500){
+function cq(delay = 5500) {
   var xmlHttp = null;
   if (window.ActiveXObject) {
     // IE6, IE5 浏览器执行代码
@@ -15,7 +20,7 @@ function cq(delay=5500){
   }
   //2.如果实例化成功，就调用open（）方法：
   if (xmlHttp != null) {
-    xmlHttp.open("get", "//192.168.149.166/新建文件夹/label.csv", true)
+    xmlHttp.open("get", CONFIG.FILEURL + "label.csv", true);
     xmlHttp.send();
     xmlHttp.onreadystatechange = doR; //设置回调函数
   }
@@ -31,7 +36,7 @@ function cq(delay=5500){
   }
   // console.log(trail)
   // console.log(temp)
-  if(temp==trail-1){
+  if (temp == trail - 1) {
     window.clearInterval(d);
     window.clearInterval(b);
     window.clearInterval(c);
@@ -100,13 +105,13 @@ function szdsq(delay) {
   c = window.setInterval(cal1, delay);
 }
 //格式化函数
-var a=b=c=0;
+var a = (b = c = 0);
 var qd = 240;
 var i = 1;
 var t = 0;
-var trail=1;
-temp=-1;
-tf=0;
+var trail = 1;
+temp = -1;
+tf = 0;
 p = 0.001;
 trialtime = 5.5;
 j = 0;
@@ -115,14 +120,15 @@ var globalo = {
   s1: 0,
   s2: 0,
   s3: 0,
+  s4:0
 };
 number = 1;
 ScaleMinValue = 120;
 ScaleMaxValue = 360;
 xs = (trialtime - 1.8) / number;
 //必须两行
-refresh(0, 0, 0, "", "", "", 240);
-refresh(0, 0, 0, "", "", "", 240);
+refresh(0, 0, 0, 0, "", "", "", "", 240);
+refresh(0, 0, 0, 0, "", "", "", "", 240);
 function refreshall() {
   document.getElementById("resText").style.paddingLeft = "2%";
   document.getElementById("resText").innerHTML = "多人混合脑机接口";
@@ -136,13 +142,14 @@ function refreshall() {
     s1: 0,
     s2: 0,
     s3: 0,
+    s4:0
   };
   number = 1;
   ScaleMinValue = 120;
   ScaleMaxValue = 360;
   xs = (trialtime - 1.8) / number;
   //必须两行
-  refresh(0, 0, 0, "", "", "", 240);
+  refresh(0, 0, 0,0, "", "", "", "", 240);
 }
 //主函数
 function cal1(delay = 5500) {
@@ -167,25 +174,26 @@ function cal2() {
   }
   //2.如果实例化成功，就调用open（）方法：
   if (xmlHttp != null) {
-    xmlHttp.open("get", "//192.168.149.166/新建文件夹/label.csv", true)
+    xmlHttp.open("get", CONFIG.FILEURL + "label.csv", true);
     xmlHttp.send();
     xmlHttp.onreadystatechange = doResult; //设置回调函数
   }
   async function doResult() {
     //判断三个框是否执行完毕
     fd = 1;
-    if (global["flag1"] + global["flag2"] + global["flag3"] == 3) {
+    if (global["flag1"] + global["flag2"] + global["flag3"]+global["flag4"] == 4) {
       return 0;
     }
     if (xmlHttp.readyState == 4) {
       data = Papa.parse(xmlHttp.responseText);
       data = data.data;
       // alert(trail)
-      label = data[0][3];
+      label = data[0][4];
       label1 = data[0][0];
       label2 = data[0][1];
       label3 = data[0][2];
-      trail = data[0][4];
+      label4 = data[0][3];
+      trail = data[0][5];
       //显示当前任务
       document.getElementById("resText").style.paddingLeft = "5%";
       if (label == 1) {
@@ -221,7 +229,8 @@ function cal2() {
       }
       num1 = speed(label1);
       num2 = speed(label2);
-      num3 = speed2(label3);
+      num3 = speed(label3);
+      num4 = speed2(label4);
       // alert(num1)
       function animal(a, num, canvas, s1, ngn) {
         global[a] = global[a] + num[s];
@@ -301,23 +310,25 @@ function cal2() {
         var t2 = +new Date();
         animal("a", num1, "Canvas01", "s1", "单脑A");
         animal("b", num2, "Canvas02", "s2", "单脑B");
-        animal("c", num3, "Canvas03", "s3", "双脑");
+        animal("c", num3, "Canvas03", "s3", "单脑C");
+        animal("c", num4, "Canvas04", "s4", "多脑");
         pdzy("a", "flag1", "f1", "Canvas01", "s1", "单脑A");
         pdzy("b", "flag2", "f2", "Canvas02", "s2", "单脑B");
-        pdzy("c", "flag3", "f3", "Canvas03", "s3", "双脑");
+        pdzy("c", "flag3", "f3", "Canvas03", "s3", "单脑C");
+        pdzy("c", "flag4", "f4", "Canvas04", "s4", "多脑");
       }
     }
   }
 }
 async function cal3() {
-  console.log(trail)
-  console.log(temp)
-  if(i>trail||(temp!=-1&&temp==trail)){
-    d=window.setInterval(cq,200);
+  console.log(trail);
+  console.log(temp);
+  if (i > trail || (temp != -1 && temp == trail)) {
+    d = window.setInterval(cq, 200);
     window.clearInterval(b);
     window.clearInterval(c);
     jx = 1;
-    temp=trail;
+    temp = trail;
     return 0;
   }
   await sleep(3500);
@@ -334,7 +345,8 @@ async function cal3() {
   }
   pdkx("flag1", "f1", "Canvas01", "s1", "单脑A");
   pdkx("flag2", "f2", "Canvas02", "s2", "单脑B");
-  pdkx("flag3", "f3", "Canvas03", "s3", "双脑");
+  pdkx("flag3", "f3", "Canvas03", "s3", "单脑C");
+  pdkx("flag4", "f4", "Canvas04", "s4", "多脑");
 
   if (global["f1"] == 1) {
     globalo["s1"] = globalo["s1"] + 1;
@@ -345,18 +357,24 @@ async function cal3() {
   if (global["f3"] == 1) {
     globalo["s3"] = globalo["s3"] + 1;
   }
+  if (global["f4"] == 1) {
+    globalo["s4"] = globalo["s4"] + 1;
+  }
   global["f1"] = 0;
   global["f2"] = 0;
   global["f3"] = 0;
+  global["f4"] = 0;
   j = j + number;
   await sleep(500);
   refresh(
     globalo["s1"],
     globalo["s2"],
     globalo["s3"],
+    globalo["s4"],
     (globalo["s1"] / j).toFixed(2),
     (globalo["s2"] / j).toFixed(2),
     (globalo["s3"] / j).toFixed(2),
+    (globalo["s4"] / j).toFixed(2),
     240
   );
   global = {
@@ -377,7 +395,7 @@ async function cal3() {
     document.getElementById("button2").style.display = "block";
   }
   i = i + 1;
-  temp=trail;
+  temp = trail;
 }
 
 //取数组内一排
@@ -436,10 +454,11 @@ function sleep(millisecond) {
 }
 
 // };
-function refresh(data1, data2, data3, zql1, zql2, zql3, mathVal) {
+function refresh(data1, data2, data3, data4, zql1, zql2, zql3, zql4, mathVal) {
   canvasScore("Canvas01", data1, zql1, mathVal, "单脑A");
   canvasScore("Canvas02", data2, zql2, mathVal, "单脑B");
-  canvasScore("Canvas03", data3, zql3, mathVal, "双脑");
+  canvasScore("Canvas03", data3, zql3, mathVal, "单脑C");
+  canvasScore("Canvas04", data4, zql4, mathVal, "三脑");
 }
 //第一个参数为 ID选择器
 //第二个参数为传入的分数值

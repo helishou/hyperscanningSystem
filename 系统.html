@@ -10,31 +10,19 @@
         width: 100%;
         height: 100%;
         margin: 0;
+        overflow: none none;
       }
-      #Canvas01 {
-       /* border: 1px solid #eee; */
-      position:absolute;
-      left: 5%;
-      top: 5%;
+      #flex {
+        display: flex;
       }
-      #Canvas02 {
-       /* border: 1px solid #eee; */
-       
-      position:absolute;
-      margin: auto;
-      top: 5%;
-      left: 0;
-      right: 0;
+      canvas {
+        flex: 1;
+        transform: scale(0.9);
       }
-      #Canvas03 {
-       /* border: 1px solid #eee; */
-      position:absolute;
-      right: 5%;
-      top: 5%;
-      }
+
       #multiple {
         border: 2px solid #eee;
-        position:absolute;
+        position: absolute;
         left: 12%;
         top: 85%;
         background: -webkit-linear-gradient(top, #0e83f5 0%, #21bdf6 100%);
@@ -67,13 +55,13 @@
         background: -moz-linear-gradient(top, #0e83f5 0%, #21bdf6 100%);
         background: linear-gradient(top, #0e83f5 0%, #21bdf6 100%);
         right: 47%;
-        left:45%;
+        left: 45%;
         width: 120px;
         height: 30px;
         font-size: large;
         display: none;
       }
-      #resText{
+      #resText {
         position: absolute;
         top: 10%;
         background: rgb(1, 62, 151);
@@ -81,9 +69,9 @@
         width: 60%;
         height: 15%;
         color: white;
-        font-weight:bold;
-        font: 90px Tahoma,Helvetica,Arial,"\5b8b\4f53",sans-serif;
-        text-shadow: 0 0 0.2em #21bdf6, 0 0 0.2em #21bdf6,0 0 0.2em #21bdf6;
+        font-weight: bold;
+        font: 90px Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
+        text-shadow: 0 0 0.2em #21bdf6, 0 0 0.2em #21bdf6, 0 0 0.2em #21bdf6;
         /* display: none; */
         padding-left: 2%;
         /* color: white; text-shadow: black 0.1em 0.1em 0.2em */
@@ -92,7 +80,7 @@
     <script src="papaparse.js"></script>
   </head>
   <body>
-    <div id="container" style="width: 100%; height: 100%;">
+    <div id="container" style="width: 100%; height: 100%">
       <!-- <div id="header" style="background-color:#FFA500;">
       <h1 style="margin-bottom:0;">主要的网页标题</h1></div> -->
       <div
@@ -103,19 +91,25 @@
           width: 100%;
           float: left;
           background-size: 100% 100%;
+          overflow: hidden;
         "
       >
         <div id="resText">多人混合脑机接口</div>
-        <canvas id="Canvas01" width="430" height="600"></canvas>
-        <canvas id="Canvas02" width="430" height="600"></canvas>
-        <canvas id="Canvas03" width="430" height="600"></canvas>
+        <div id="flex">
+          <canvas id="Canvas01" width="390" height="600"></canvas>
+          <canvas id="Canvas02" width="390" height="600"></canvas>
+          <canvas id="Canvas03" width="390" height="600"></canvas>
+          <canvas id="Canvas04" width="390" height="600"></canvas>
+        </div>
         <select id="multiple">
           <option value="数据层融合" selected="selected">数据层融合</option>
           <option value="中间层融合">中间层融合</option>
           <option value="决策层融合">决策层融合</option>
         </select>
         <button type="button" id="button1" onclick="szdsq(5500)">开始!</button>
-        <button type="button" id="button2" onclick="refreshall()">全部重置</button>
+        <button type="button" id="button2" onclick="refreshall()">
+          全部重置
+        </button>
       </div>
     </div>
     <!-- <input type="button" onclick="ffsx()" value="点击"> -->
