@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>js中的Ajax经典实例</title>
+    <script src="papaparse.js"></script>
+    <script type="text/javascript">
+            function ajax() {
+              //1.声明异步请求对象：
+              var xmlHttp = null;
+              if (window.ActiveXObject) {
+                // IE6, IE5 浏览器执行代码
+                xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+              } else if (window.XMLHttpRequest) {
+                // IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+                xmlHttp = new XMLHttpRequest();
+              }
+              //2.如果实例化成功，就调用open（）方法：
+              if (xmlHttp != null) {
+                xmlHttp.open("get", "data.csv", true);
+                xmlHttp.send();
+                xmlHttp.onreadystatechange = doResult; //设置回调函数
+              }
+              function doResult() {
+                if (xmlHttp.readyState == 4) {
+                  //4表示执行完成
+                  // if (xmlHttp.status == 200) { //200表示执行成功
+                  // document.getElementById("resText").innerHTML = processData(xmlHttp.responseText);
+                  // data=CSV(xmlHttp.responseText);
+                  data=Papa.parse(xmlHttp.responseText)
+                  // data=JSON.stringify(data.sort());
+                  data=data.data
+                  // js=parseInt(data[1][2])+parseInt(data[1][10])
+                  data=JSON.stringify(data);
+                  // document.getElementById("resText").innerHTML = data;
+
+                  document.getElementById("resText").innerHTML = data;
+                  // }
+                  // else{
+                  //     document.getElementById("resText").innerHTML = xmlHttp.responseText;
+                  // }
+                }
+                // else{
+                //         document.getElementById("resText").innerHTML ='ggsmd2'
+                //     }
+              }
+            }
+
+            function CSV(csvString){
+                  let data = [];
+                  let relArr = csvString.split("\r\n");
+                  if(relArr.length > 1) {
+                      let title = relArr[0].split(',');
+                      let title_arr = title.keys();
+                      for(let key = 1, len = relArr.length-1; key < len; key++) {
+                          let values = relArr[key];
+                          let objArr = values.split(",");
+                          let obj = {};
+                          for(let i=0;i<title.length;i++){
+                              obj[title[title_arr.next().value]] = objArr[i];
+                          }
+                          data.push(obj);
+                          title_arr = title.keys();
+                      }
+                  }
+                  return data;
+            }
+            function processData(allText) {
+              var record_num = 15; // or however many elements there are in each row
+              var allTextLines = allText.split(/rn|n/);
+              var entries = allTextLines[0].split(",");
+              var lines = [];
+
+              var headings = entries.splice(0, record_num);
+              while (entries.length > 0) {
+                var tarr = [];
+                for (var j = 0; j < record_num; j++) {
+                  tarr.push(headings[j] + ":" + entries.shift());
+                }
+                lines.push(tarr);
+              }
+              // alert(lines);
+              return lines;
+            }
+    </script>
+  </head>
+  <body>
+    <form id="form1" runat="server">
+      <div id="resText">1111</div>
+      <input type="button" οnclick="ajax()" value="点击">
+      <input type="button" onclick="ajax()" value="点击">
+    </form>
+  </body>
+</html>
