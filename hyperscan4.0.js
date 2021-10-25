@@ -20,49 +20,48 @@ async function test() {
 }
 //websocket
 function webSocket(url = CONFIG.URL) {
-  if ("WebSocket" in window) {
-    console.log("您的浏览器支持WebSocket");
-    var ws = new WebSocket(url);
-    //创建WebSocket连接
-    ws.onopen = function () {
-      //当WebSocket创建成功时，触发onopen事件
-      console.log("open");
-      ws.send("hello"); //将消息发送到服务端
-    };
-    ws.onmessage = function (e) {
-      //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据
-      var data = e.data;
-      console.log(data);
-      if ((data.indexOf = "start" != -1)) {
-        console.log("start");
-        //清空
-        start(5500);
-        // refresh(0, 0, 0, 0, "", "", "", "", 240);
-      } else if ((data.indexOf = "end" != -1)) {
-        end();
+  var ws = io(url);
+  //#region 创建WebSocket连接
+  // ws.onopen = function () {
+  //   //当WebSocket创建成功时，触发onopen事件
+  //   console.log("open");
+  //   ws.send("hello"); //将消息发送到服务端
+  // };
+  //#endregion
+  ws.on("my_response", function (msg, cb) {
+    //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据
+    var data = msg.data.predict;
+    console.log(data);
+    if ((data.indexOf = "start" != -1)) {
+      console.log("start");
+      //清空
+      start();
+      // refresh(0, 0, 0, 0, "", "", "", "", 240);
+    } else if ((data.indexOf = "end" != -1)) {
+      end();
+    } else {
+      var arr = data.splice(" ");
+      if (arr.length != 5) {
+        console.log("数据长度不对");
+        return;
       } else {
-        var arr = data.splice(" ");
-        if (arr.length != 5) {
-          console.log("数据长度不对");
-          return;
-        } else {
-          change(arr);
-        }
+        change(arr);
       }
-    };
-    ws.onclose = function (e) {
-      //当客户端收到服务端发送的关闭连接请求时，触发onclose事件
-      console.log("close");
-      end();
-    };
-    ws.onerror = function (e) {
-      //如果出现连接、处理、接收、发送数据失败的时候触发onerror事件
-      console.log(error);
-      end();
-    };
-  } else {
-    console.log("您的浏览器不支持WebSocket");
-  }
+    }
+  });
+  ws.emit("startexperiment");
+  //#region error close回调
+  // ws.onclose = function (e) {
+  //   //当客户端收到服务端发送的关闭连接请求时，触发onclose事件
+  //   console.log("close");
+  //   end();
+  // };
+  // ws.onerror = function (e) {
+  //   //如果出现连接、处理、接收、发送数据失败的时候触发onerror事件
+  //   console.log(error);
+  //   end();
+  // };
+  //#endregion
 }
 //持续读取xls的定时器
 function change(arr) {
@@ -82,7 +81,7 @@ function change(arr) {
   };
   cal2(arr);
 }
-function start(delay) {
+function start() {
   if (document.getElementById("button1").innerText == "暂停") {
     // window.clearInterval(b);
     // window.clearInterval(c);
