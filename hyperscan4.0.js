@@ -1,14 +1,64 @@
 //config
 var CONFIG = {
+  label: [
+    0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0,
+    0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1,
+    0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0,
+    0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
+    0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0,
+    1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0,
+    0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1,
+    0, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0,
+    0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1,
+    0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1,
+    0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0,
+    1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0,
+    1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1,
+    0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1,
+    1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1,
+  ],
   URL: "./",
   time: 30, //30对应指针运动3s
+  middleText: "",
+  leftText: "左手",
+  rightText: "右手",
+  leftLabel: 0,
+  rightLabel: 1,
+  restLabel: 2,
 };
-delay = 5500;
-trail = 0;
 let conutTime = +new Date();
+trail = a = b = c = d = s = tf = j = jx = 0;
+var qd = 240;
+var i = 1;
+var t = 0;
+global = {
+  a: 240,
+  b: 240,
+  c: 240,
+  f1: 0,
+  f2: 0,
+  f3: 0,
+  flag1: 0,
+  flag2: 0,
+  flag3: 0,
+};
+p = 0.001;
+trialtime = 5.5;
+var globalo = {
+  s1: 0,
+  s2: 0,
+  s3: 0,
+  s4: 0,
+};
+number = 1;
+ScaleMinValue = 120;
+ScaleMaxValue = 360;
+//必须两行
+refresh(0, 0, 0, 0, "", "", "", "", 240);
+refresh(0, 0, 0, 0, "", "", "", "", 240);
 //测试函数
 async function test() {
-  start(5500);
+  start();
   for (let i = 0; i < 99; i++) {
     setTimeout(() => {
       change(randomArr(6, -1, 1));
@@ -20,7 +70,7 @@ async function test() {
 }
 //websocket
 function webSocket(url = CONFIG.URL) {
-  var ws = io(url);
+  var ws = io("/res");
   //#region 创建WebSocket连接
   // ws.onopen = function () {
   //   //当WebSocket创建成功时，触发onopen事件
@@ -31,25 +81,14 @@ function webSocket(url = CONFIG.URL) {
   ws.on("my_response", function (msg, cb) {
     //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据
     var data = msg.data.predict;
+    data.push(Config.label[trail]);
     console.log(data);
-    if ((data.indexOf = "start" != -1)) {
-      console.log("start");
-      //清空
-      start();
-      // refresh(0, 0, 0, 0, "", "", "", "", 240);
-    } else if ((data.indexOf = "end" != -1)) {
-      end();
-    } else {
-      var arr = data.splice(" ");
-      if (arr.length != 5) {
-        console.log("数据长度不对");
-        return;
-      } else {
-        change(arr);
-      }
+    if (Array.isArray(data)) {
+      change(data);
     }
   });
   ws.emit("startexperiment");
+  start();
   //#region error close回调
   // ws.onclose = function (e) {
   //   //当客户端收到服务端发送的关闭连接请求时，触发onclose事件
@@ -90,7 +129,6 @@ function start() {
     jx = 1;
     return 0;
   }
-  jx = 0;
   if (
     document.getElementById("button1").innerText == "开始!" ||
     document.getElementById("button1").innerText == "继续"
@@ -99,50 +137,9 @@ function start() {
     document.getElementById("button1").innerText = "暂停";
     fd = 0;
   }
-  global = {
-    a: 240,
-    b: 240,
-    c: 240,
-    f1: 0,
-    f2: 0,
-    f3: 0,
-    flag1: 0,
-    flag2: 0,
-    flag3: 0,
-  };
-  s = 0;
-  d = 0;
-  a = 0;
-  b = 0;
-  c = 0;
 }
 
-//格式化函数
-var a = (b = c = 0);
-var qd = 240;
-var i = 1;
-var t = 0;
-var trail = 1;
-temp = -1;
-tf = 0;
-p = 0.001;
-trialtime = 5.5;
-j = 0;
-fd = 0;
-var globalo = {
-  s1: 0,
-  s2: 0,
-  s3: 0,
-  s4: 0,
-};
-number = 1;
-ScaleMinValue = 120;
-ScaleMaxValue = 360;
-xs = (trialtime - 1.8) / number;
-//必须两行
-refresh(0, 0, 0, 0, "", "", "", "", 240);
-refresh(0, 0, 0, 0, "", "", "", "", 240);
-function refreshall() {
+/* function refreshall() {
   document.getElementById("resText").style.paddingLeft = "2%";
   document.getElementById("resText").innerHTML = "多人混合脑机接口";
   document.getElementById("button2").style.display = "none";
@@ -160,45 +157,26 @@ function refreshall() {
   number = 1;
   ScaleMinValue = 120;
   ScaleMaxValue = 360;
-  xs = (trialtime - 1.8) / number;
   //必须两行
   refresh(0, 0, 0, 0, "", "", "", "", 240);
-}
-//主函数
-function cal1(arr) {
-  // if (fd == 0) {
-  //   document.getElementById("resText").style.paddingLeft = "10%";
-  //   document.getElementById("resText").innerHTML = "等待数据导入";
-  //   return 0;
-  // }
-  cal2(arr);
-  cal3();
-  a = window.setInterval(() => cal2(arr), 500);
-}
+} */
 
 async function cal2(arr) {
   console.log(arr);
   //判断三个框是否执行完毕
-  fd = 1;
   if (
     global["flag1"] + global["flag2"] + global["flag3"] + global["flag4"] ==
     4
   ) {
     return 0;
   }
-  // alert(trail)
-  label = arr[4];
-  label1 = arr[0];
-  label2 = arr[1];
-  label3 = arr[2];
-  label4 = arr[3];
-  trail = arr[5];
+  [label1, label2, label3, label4, label] = arr;
   //显示当前任务
   document.getElementById("resText").style.paddingLeft = "5%";
-  if (label == 1) {
+  if (label == CONFIG.rightLabel) {
     document.getElementById("resText").innerHTML =
       "  Trial  " + i + "   想像:向右";
-  } else if (label == 0) {
+  } else if (label == CONFIG.restLabel) {
     document.getElementById("resText").innerHTML =
       "  Trial  " + i + "   想像:空闲";
   } else {
@@ -207,9 +185,9 @@ async function cal2(arr) {
   }
   //设定速度
   function speed(label) {
-    if (label == 0) {
+    if (label == CONFIG.restLabel) {
       num = randomArr(trialtime / p, -5500 * p, 4500 * p);
-    } else if (label == 1) {
+    } else if (label == CONFIG.rightLabel) {
       num = randomArr(trialtime / p, 6000 * p, 8000 * p);
     } else {
       num = randomArr(trialtime / p, -9000 * p, -6000 * p);
@@ -217,12 +195,12 @@ async function cal2(arr) {
     return num;
   }
   function speed2(label) {
-    if (label == 0) {
-      num = randomArr(trialtime / p, -5000 * p, 4000 * p);
-    } else if (label == 1) {
-      num = randomArr(trialtime / p, 5000 * p, 10000 * p);
+    if (label == CONFIG.restLabel) {
+      num = randomArr(CONFIG.time + 1, -5000 * p, 4000 * p);
+    } else if (label == CONFIG.rightLabel) {
+      num = randomArr(CONFIG.time + 1, 5000 * p, 10000 * p);
     } else {
-      num = randomArr(trialtime / p, -11000 * p, -5000 * p);
+      num = randomArr(CONFIG.time + 1, -11000 * p, -5000 * p);
     }
     return num;
   }
@@ -247,7 +225,7 @@ async function cal2(arr) {
       global[flag] = 1;
       //终止定时器
       canvasScore(canvas, globalo[s1], "t", ScaleMaxValue, ngn + "：判断中");
-      if (parseInt(label) == 1) {
+      if (parseInt(label) == CONFIG.rightLabel) {
         global[f1] = 1;
         canvasScore(canvas, globalo[s1], "t", ScaleMaxValue, ngn + "：正确");
       } else {
@@ -259,7 +237,7 @@ async function cal2(arr) {
       global[flag] = 1;
       //终止定时器
       canvasScore(canvas, globalo[s1], "t", ScaleMinValue, ngn + "：判断中");
-      if (parseInt(label) == -1) {
+      if (parseInt(label) == CONFIG.leftLabel) {
         global[f1] = 1;
         canvasScore(canvas, globalo[s1], "t", ScaleMinValue, ngn + "：正确");
       } else {
@@ -267,9 +245,9 @@ async function cal2(arr) {
       }
     }
   }
-  var time = 0;
+  var s = 0;
   function changePoint() {
-    animal("a", num1, "Canvas01", "s1", "单脑A");
+    animal("a", speed(label1), "Canvas01", "s1", "单脑A");
     animal("b", num2, "Canvas02", "s2", "单脑B");
     animal("c", num3, "Canvas03", "s3", "单脑C");
     animal("c", num4, "Canvas04", "s4", "多脑");
@@ -278,12 +256,12 @@ async function cal2(arr) {
     pdzy("c", "flag3", "f3", "Canvas03", "s3", "单脑C");
     pdzy("c", "flag4", "f4", "Canvas04", "s4", "多脑");
     // console.log(time)
-    if (time >= CONFIG.time) {
+    if (s >= CONFIG.time) {
       clearInterval(pointInterval);
       cal3();
       // console.timeEnd("time");
     } else {
-      time++;
+      s++;
     }
   }
   // console.time("time");
@@ -293,7 +271,7 @@ async function cal2(arr) {
 async function cal3() {
   async function pdkx(flag, f, canvas, s, ngn) {
     if (global[flag] == 0) {
-      if (parseInt(label) == 0) {
+      if (parseInt(label) == CONFIG.restLabel) {
         global[f] = 1;
         canvasScore(canvas, globalo[s], "t", 240, ngn + "：正确");
       } else {
@@ -353,7 +331,7 @@ async function cal3() {
     document.getElementById("button2").style.display = "block";
   }
   i = i + 1;
-  temp = trail;
+  // temp = trail;
 }
 
 //取数组内一排
@@ -551,7 +529,19 @@ function canvasScore(id, getScore, creditTxt, mathVal, getTime) {
   // 轻微模糊阴影
   ctx.shadowBlur = 2;
 
-  var gradText = ["", "左手", " ", " ", " ", "空闲", " ", " ", " ", "右手", ""];
+  var gradText = [
+    "",
+    CONFIG.leftText,
+    " ",
+    " ",
+    " ",
+    CONFIG.middleText,
+    " ",
+    " ",
+    " ",
+    CONFIG.rightText,
+    "",
+  ];
   for (var i = 0; i < gradText.length; i++) {
     //第一次旋转值是绝对位置(相较原始顶点位置)，第二次旋转相对位置(相较上一次)
     if (i == 0) {
