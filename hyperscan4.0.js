@@ -69,7 +69,7 @@ async function test() {
   }
 }
 //websocket
-function webSocket(url = CONFIG.URL) {
+function webSocket() {
   var ws = io("/res");
   //#region 创建WebSocket连接
   // ws.onopen = function () {
