@@ -138,15 +138,15 @@ async function cal2(arr) {
   }
   [label1, label2, label3, label4, label] = arr;
   //显示当前任务
-  document.getElementById("resText").style.paddingLeft = "5%";
+  document.getElementById("title").style.paddingLeft = "5%";
   if (label == CONFIG.rightLabel) {
-    document.getElementById("resText").innerHTML =
+    document.getElementById("title").innerHTML =
       "  Trial  " + i + "   想像:向右";
   } else if (label == CONFIG.restLabel) {
-    document.getElementById("resText").innerHTML =
+    document.getElementById("title").innerHTML =
       "  Trial  " + i + "   想像:空闲";
   } else {
-    document.getElementById("resText").innerHTML =
+    document.getElementById("title").innerHTML =
       "  Trial  " + i + "   想像:向左";
   }
   //设定速度
