@@ -80,8 +80,9 @@ function webSocket() {
   //#endregion
   ws.on("my_response", function (msg, cb) {
     //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据
+    msg = JSON.parse(msg);
     var data = msg.data.predict;
-    data.push(Config.label[trail]);
+    data.push(CONFIG.label[trail]);
     console.log(data);
     if (Array.isArray(data)) {
       change(data);
@@ -121,45 +122,10 @@ function change(arr) {
   cal2(arr);
 }
 function start() {
-  if (document.getElementById("button1").innerText == "暂停") {
-    // window.clearInterval(b);
-    // window.clearInterval(c);
-    document.getElementById("button1").innerText = "等待停止";
-    document.getElementById("button1").disabled = "disabled";
-    jx = 1;
-    return 0;
-  }
-  if (
-    document.getElementById("button1").innerText == "开始!" ||
-    document.getElementById("button1").innerText == "继续"
-  ) {
-    document.getElementById("button2").style.display = "none";
-    document.getElementById("button1").innerText = "暂停";
-    fd = 0;
-  }
+  let button = document.getElementById("button1");
+  button.innerText = "运行中";
+  button.disabled = true;
 }
-
-/* function refreshall() {
-  document.getElementById("resText").style.paddingLeft = "2%";
-  document.getElementById("resText").innerHTML = "多人混合脑机接口";
-  document.getElementById("button2").style.display = "none";
-  qd = 240;
-  i = 1;
-  p = 0.001;
-  trialtime = 5.5;
-  j = 0;
-  globalo = {
-    s1: 0,
-    s2: 0,
-    s3: 0,
-    s4: 0,
-  };
-  number = 1;
-  ScaleMinValue = 120;
-  ScaleMaxValue = 360;
-  //必须两行
-  refresh(0, 0, 0, 0, "", "", "", "", 240);
-} */
 
 async function cal2(arr) {
   console.log(arr);
