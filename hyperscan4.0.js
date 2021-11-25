@@ -360,7 +360,7 @@ function refresh(data1, data2, data3, data4, zql1, zql2, zql3, zql4, mathVal) {
   canvasScore("Canvas01", data1, zql1, mathVal, "单脑A");
   canvasScore("Canvas02", data2, zql2, mathVal, "单脑B");
   canvasScore("Canvas03", data3, zql3, mathVal, "单脑C");
-  canvasScore("Canvas04", data4, zql4, mathVal, "三脑");
+  canvasScore("Canvas04", data4, zql4, mathVal, "多脑");
 }
 //第一个参数为 ID选择器
 //第二个参数为传入的分数值
